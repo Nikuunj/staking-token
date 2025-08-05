@@ -12,12 +12,16 @@ contract TestContract is Test {
         c = new StakeContract();
     }
 
-    function testBar() public {
-        assertEq(uint256(1), uint256(1), "ok");
+    function testStake() public {
+
     }
 
-    function testFoo(uint256 x) public {
-        vm.assume(x < type(uint128).max);
-        assertEq(x + x, x * 2);
+    function testUnstake() public {
+        uint value = 10 ether;
+        vm.deal(0x03Ff46a0573c22eFe805FD8DA1537d67a76d82Ae, value);
+        vm.startPrank(0x03Ff46a0573c22eFe805FD8DA1537d67a76d82Ae);
+        c.stake{value : value}();
+        c.unstake(value);
+        assert(c.totalBalance() == 0);
     }
 }
