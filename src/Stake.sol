@@ -5,9 +5,10 @@ contract StakeContract {
 
     uint public totalBalance;
     mapping (address => uint) public stakes;
+    address implementation;
 
-    constructor() {
-
+    constructor(address _implementation) {
+        implementation = _implementation;
     }
 
     function stake() public payable{
@@ -21,5 +22,9 @@ contract StakeContract {
         totalBalance -= _amount;
         payable(msg.sender).transfer(_amount);
         stakes[msg.sender] -= _amount;
+    }
+
+    function setImplementation(address _implementation) public {
+        implementation = _implementation;
     }
 }
