@@ -5,23 +5,15 @@ contract StakeContract {
 
     uint public totalBalance;
     mapping (address => uint) public stakes;
-    address implementation;
+    address public implementation;
 
     constructor(address _implementation) {
         implementation = _implementation;
     }
-
-    function stake() public payable{
-        require(msg.value > 0);
-        stakes[msg.sender] += msg.value;
-        totalBalance += msg.value;
-    }
-
-    function unstake(uint _amount) public {
-        require(stakes[msg.sender] >= _amount);
-        totalBalance -= _amount;
-        payable(msg.sender).transfer(_amount);
-        stakes[msg.sender] -= _amount;
+    
+    fallback() external payable {
+        (bool success, ) = implementation.delegatecall(msg.data);
+        require(success, "Delegatecall failed");
     }
 
     function setImplementation(address _implementation) public {
